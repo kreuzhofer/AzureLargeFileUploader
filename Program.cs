@@ -7,7 +7,7 @@ namespace AzureLargeFileUploader
     {
         static int Main(string[] args)
         {
-            if (args.Length != 3)
+            if (args.Length != 4)
             {
                 Help();
                 return -1;
@@ -20,7 +20,10 @@ namespace AzureLargeFileUploader
                 Help();
             }
             var containerName = args[1];
-            var connectionString = args[2];
+            var storageAccountName = args[2];
+            var storageAccountKey = args[3];
+
+            var connectionString = $"DefaultEndpointsProtocol=https;AccountName={storageAccountName};AccountKey={storageAccountKey}";
 
             LargeFileUploaderUtils.UploadAsync(fileToUpload, connectionString, containerName, (sender, i) =>
             {
@@ -38,7 +41,7 @@ namespace AzureLargeFileUploader
             Console.WriteLine("Azure Large File Uploader, (C)2016 by Daniel Kreuzhofer (@dkreuzh), MIT License");
             Console.WriteLine("Source code is available at https://github.com/kreuzhofer/AzureLargeFileUploader");
             Console.WriteLine("********************************************************************************");
-            Console.WriteLine("USAGE: AzureLargeFileUploader.exe <FileToUpload> <Container> <ConnectionString>");
+            Console.WriteLine("USAGE: AzureLargeFileUploader.exe <FileToUpload> <Container> <StorageAccountName> <StorageAccountKey>");
         }
     }
 }
