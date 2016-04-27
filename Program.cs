@@ -30,7 +30,6 @@ namespace AzureLargeFileUploader
             {
             });
 
-            Console.ReadLine();
             return 0;
         }
 
