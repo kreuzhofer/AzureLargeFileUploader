@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace AzureLargeFileUploader
 {
@@ -25,21 +26,29 @@ namespace AzureLargeFileUploader
 
             var connectionString = $"DefaultEndpointsProtocol=https;AccountName={storageAccountName};AccountKey={storageAccountKey}";
 
+            Header();
+
             LargeFileUploaderUtils.Log = Console.WriteLine;
-            LargeFileUploaderUtils.UploadAsync(fileToUpload, connectionString, containerName, (sender, i) =>
+            var task = LargeFileUploaderUtils.UploadAsync(fileToUpload, connectionString, containerName, (sender, i) =>
             {
             });
+            Task.WaitAll(task);
 
             return 0;
+        }
+
+        private static void Header()
+        {
+            Console.WriteLine("********************************************************************************");
+            Console.WriteLine("Azure Large File Uploader, (C)2016 by Daniel Kreuzhofer (@dkreuzh), MIT License");
+            Console.WriteLine("Source code is available at https://github.com/kreuzhofer/AzureLargeFileUploader");
+            Console.WriteLine("********************************************************************************");
         }
 
         private static void Help()
         {
             Console.WriteLine();
-            Console.WriteLine("********************************************************************************");
-            Console.WriteLine("Azure Large File Uploader, (C)2016 by Daniel Kreuzhofer (@dkreuzh), MIT License");
-            Console.WriteLine("Source code is available at https://github.com/kreuzhofer/AzureLargeFileUploader");
-            Console.WriteLine("********************************************************************************");
+            Header();
             Console.WriteLine("USAGE: AzureLargeFileUploader.exe <FileToUpload> <Container> <StorageAccountName> <StorageAccountKey>");
         }
     }
