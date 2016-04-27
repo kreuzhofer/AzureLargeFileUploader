@@ -1,4 +1,6 @@
-﻿namespace LargeFileUploader
+﻿using System.IO;
+
+namespace LargeFileUploader
 {
     using Microsoft.WindowsAzure.Storage;
     using System;
@@ -6,26 +8,37 @@
 
     class Program
     {
-
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
-            LargeFileUploaderUtils.Log = Console.Out.WriteLine;
-            LargeFileUploaderUtils.NumBytesPerChunk = 8 * 1024;
+            if (args.Length != 3)
+            {
+                Help();
+                return -1;
+            }
 
-            //LargeFileUploaderUtils.UploadAsync(
-            //    inputFile: @"C:\Users\chgeuer\format504015.mp4",
-            //    storageConnectionString: Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING"),
-            //    containerName: "dummy222222",
-            //    uploadParallelism: 2).Wait();
+            var fileToUpload = args[0];
+            if (!File.Exists(fileToUpload))
+            {
+                Console.WriteLine("File does not exist: "+fileToUpload);
+                Help();
+            }
+            var containerName = args[1];
+            var connectionString = args[2];
 
+            LargeFileUploaderUtils.UploadAsync(fileToUpload, connectionString, containerName, (sender, i) =>
+            {
+                Console.WriteLine(i);
+            });
 
-            byte[] someData = Encoding.UTF8.GetBytes("Hallo");
+            Console.ReadLine();
+            return 0;
+        }
 
-            var address = someData.UploadAsync(
-                storageAccount: CloudStorageAccount.DevelopmentStorageAccount,
-                containerName: "dummy222222",
-                blobName: "somedata2.txt",
-                uploadParallelism: 1).Result;
+        private static void Help()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Azure Large File Uploader");
+            Console.WriteLine("USAGE: AzureLargeFileUploader.exe <FileToUpload> <Container> <ConnectionString>");
         }
     }
 }

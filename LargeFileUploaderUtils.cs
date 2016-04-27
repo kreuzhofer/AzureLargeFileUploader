@@ -1,4 +1,6 @@
-﻿namespace LargeFileUploader
+﻿using System.Net;
+
+namespace LargeFileUploader
 {
     using System;
     using System.Collections.Concurrent;
@@ -22,45 +24,44 @@
         public static void UseConsoleForLogging() { Log = Console.Out.WriteLine; }
         const uint DEFAULT_PARALLELISM = 1;
 
-        public static Task<string> UploadAsync(string inputFile, string storageConnectionString, string containerName, uint uploadParallelism = DEFAULT_PARALLELISM)
+        public static Task<string> UploadAsync(string inputFile, string storageConnectionString, string containerName, EventHandler<int> reportProgress, uint uploadParallelism = DEFAULT_PARALLELISM)
         {
-            return (new FileInfo(inputFile)).UploadAsync(CloudStorageAccount.Parse(storageConnectionString), containerName, uploadParallelism);
+            return (new FileInfo(inputFile)).UploadAsync(CloudStorageAccount.Parse(storageConnectionString), containerName, reportProgress, uploadParallelism);
         }
 
-        public static Task<string> UploadAsync(this FileInfo file, CloudStorageAccount storageAccount, string containerName, uint uploadParallelism = DEFAULT_PARALLELISM)
+        public static Task<string> UploadAsync(this FileInfo file, CloudStorageAccount storageAccount, string containerName, EventHandler<int> reportProgress, uint uploadParallelism = DEFAULT_PARALLELISM)
         {
             return UploadAsync(
-                fetchLocalData: (offset, length) => file.GetFileContentAsync(offset, (int) length),
+                fetchLocalData: (offset, length) => file.GetFileContentAsync(offset, (int)length),
                 blobLenth: file.Length,
                 storageAccount: storageAccount,
                 containerName: containerName,
-                blobName: file.Name,
+                blobName: file.Name, reportProgress: reportProgress,
                 uploadParallelism: uploadParallelism);
         }
 
-        public static Task<string> UploadAsync(this byte[] data, CloudStorageAccount storageAccount, string containerName, string blobName, uint uploadParallelism = DEFAULT_PARALLELISM)
+        public static Task<string> UploadAsync(this byte[] data, CloudStorageAccount storageAccount, string containerName, string blobName, EventHandler<int> reportProgress, uint uploadParallelism = DEFAULT_PARALLELISM)
         {
             return UploadAsync(
-                fetchLocalData: (offset, count) => { return Task.FromResult((new ArraySegment<byte>(data, (int)offset, (int) count)).Array); },
+                fetchLocalData: (offset, count) => { return Task.FromResult((new ArraySegment<byte>(data, (int)offset, (int)count)).Array); },
                 blobLenth: data.Length,
                 storageAccount: storageAccount,
                 containerName: containerName,
-                blobName: blobName,
+                blobName: blobName, reportProgress: reportProgress,
                 uploadParallelism: uploadParallelism);
         }
 
-        public static async Task<string> UploadAsync(Func<long, long, Task<byte[]>> fetchLocalData, long blobLenth,
-            CloudStorageAccount storageAccount, string containerName, string blobName, uint uploadParallelism = DEFAULT_PARALLELISM)
+        public static async Task<string> UploadAsync(Func<long, long, Task<byte[]>> fetchLocalData, long blobLenth, CloudStorageAccount storageAccount, string containerName, string blobName, EventHandler<int> reportProgress, uint uploadParallelism = DEFAULT_PARALLELISM)
         {
             var blobClient = storageAccount.CreateCloudBlobClient();
             var container = blobClient.GetContainerReference(containerName);
             await container.CreateIfNotExistsAsync();
             var blockBlob = container.GetBlockBlobReference(blobName);
-            return await UploadAsync(fetchLocalData, blobLenth, blockBlob, uploadParallelism);
+            return await UploadAsync(fetchLocalData, blobLenth, blockBlob, reportProgress, uploadParallelism);
         }
 
         public static async Task<string> UploadAsync(Func<long, long, Task<byte[]>> fetchLocalData, long blobLenth,
-            CloudBlockBlob blockBlob, uint uploadParallelism = DEFAULT_PARALLELISM) 
+            CloudBlockBlob blockBlob, EventHandler<int> reportProgress, uint uploadParallelism = DEFAULT_PARALLELISM)
         {
             const int MAXIMUM_UPLOAD_SIZE = 4 * MB;
             if (NumBytesPerChunk > MAXIMUM_UPLOAD_SIZE) { NumBytesPerChunk = MAXIMUM_UPLOAD_SIZE; }
@@ -82,10 +83,10 @@
             try
             {
                 var existingBlocks = (await blockBlob.DownloadBlockListAsync(
-                        BlockListingFilter.Uncommitted,
-                        AccessCondition.GenerateEmptyCondition(),
-                        new BlobRequestOptions { },
-                        new OperationContext { }))
+                    BlockListingFilter.Uncommitted,
+                    AccessCondition.GenerateEmptyCondition(),
+                    new BlobRequestOptions { },
+                    new OperationContext { }))
                     .Where(_ => _.Length == NumBytesPerChunk)
                     .ToList();
 
@@ -120,6 +121,7 @@
                             UseTransactionalMD5 = true
                         },
                         operationContext: new OperationContext());
+                    reportProgress(null, block.Id);
                 }, consoleExceptionHandler);
 
                 stats.Add(block.Length, start);
@@ -183,7 +185,7 @@
             bool success = false;
             while (!success)
             {
-                
+
                 try
                 {
                     await action();
@@ -243,7 +245,7 @@
             public Statistics(long totalBytes) { this.TotalBytes = totalBytes; }
 
             internal readonly DateTime InitialStartTime = DateTime.UtcNow;
-            
+
             internal readonly object _lock = new object();
             internal long TotalBytes { get; private set; }
             internal long Done { get; private set; }
