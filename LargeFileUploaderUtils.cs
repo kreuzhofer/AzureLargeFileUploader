@@ -1,19 +1,15 @@
-﻿using System.Net;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 
-namespace LargeFileUploader
+namespace AzureLargeFileUploader
 {
-    using System;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Security.Cryptography;
-    using System.Text;
-    using System.Threading.Tasks;
-
-    using global::Microsoft.WindowsAzure.Storage;
-    using global::Microsoft.WindowsAzure.Storage.Blob;
-
     public static class LargeFileUploaderUtils
     {
         const int kB = 1024;

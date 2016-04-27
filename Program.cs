@@ -1,11 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
-namespace LargeFileUploader
+namespace AzureLargeFileUploader
 {
-    using Microsoft.WindowsAzure.Storage;
-    using System;
-    using System.Text;
-
     class Program
     {
         static int Main(string[] args)
@@ -37,7 +34,10 @@ namespace LargeFileUploader
         private static void Help()
         {
             Console.WriteLine();
-            Console.WriteLine("Azure Large File Uploader");
+            Console.WriteLine("********************************************************************************");
+            Console.WriteLine("Azure Large File Uploader, (C)2016 by Daniel Kreuzhofer (@dkreuzh), MIT License");
+            Console.WriteLine("Source code is available at https://github.com/kreuzhofer/AzureLargeFileUploader");
+            Console.WriteLine("********************************************************************************");
             Console.WriteLine("USAGE: AzureLargeFileUploader.exe <FileToUpload> <Container> <ConnectionString>");
         }
     }

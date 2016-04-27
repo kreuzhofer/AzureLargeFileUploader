@@ -1,15 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LargeFileUploader", "LargeFileUploader.csproj", "{BFF3FDF1-3852-4F6F-95FF-83501ACF4C74}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureLargeFileUploader", "AzureLargeFileUploader.csproj", "{BFF3FDF1-3852-4F6F-95FF-83501ACF4C74}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{5CF5AA1E-AEC7-447A-B1E6-9D00F6A01DF2}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0CD29F27-67AA-4865-995B-E99012009F72}"
+	ProjectSection(SolutionItems) = preProject
+		LICENCE.txt = LICENCE.txt
 	EndProjectSection
 EndProject
 Global

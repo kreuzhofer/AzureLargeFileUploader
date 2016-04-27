@@ -7,8 +7,8 @@
     <ProjectGuid>{BFF3FDF1-3852-4F6F-95FF-83501ACF4C74}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LargeFileUploader</RootNamespace>
-    <AssemblyName>LargeFileUploader</AssemblyName>
+    <RootNamespace>AzureLargeFileUploader</RootNamespace>
+    <AssemblyName>AzureLargeFileUploader</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -87,6 +87,9 @@
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <PropertyGroup>
     <PostBuildEvent>$(SolutionDir)tools\7z.exe a -x!*.zip $(TargetDir)AzureLargeFileUploader.zip $(TargetDir)*.*</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>del $(TargetDir)AzureLargeFileUploader.zip</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
