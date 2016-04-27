@@ -25,9 +25,9 @@ namespace AzureLargeFileUploader
 
             var connectionString = $"DefaultEndpointsProtocol=https;AccountName={storageAccountName};AccountKey={storageAccountKey}";
 
+            LargeFileUploaderUtils.Log = Console.WriteLine;
             LargeFileUploaderUtils.UploadAsync(fileToUpload, connectionString, containerName, (sender, i) =>
             {
-                Console.WriteLine(i);
             });
 
             Console.ReadLine();
