@@ -7,4 +7,4 @@ Check http://blog.geuer-pollmann.de/blog/2014/07/21/uploading-blobs-to-azure-the
 
 Modified by Daniel Kreuzhofer to be a universal command line utility instead of just a C# include class.
 
-Latest builds are available at http://aka.ms/azupload
+Latest builds are available at http://aka.ms/azupdl
