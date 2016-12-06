@@ -39,10 +39,10 @@ namespace AzureLargeFileUploader
 
         private static void Header()
         {
-            Console.WriteLine("********************************************************************************");
-            Console.WriteLine("Azure Large File Uploader, (C)2016 by Daniel Kreuzhofer (@dkreuzh), MIT License");
+            Console.WriteLine("********************************************************************************************************************");
+            Console.WriteLine("Azure Large File Uploader, (C)2016 by Daniel Kreuzhofer (@dkreuzh), Christian Geuer-Pollmann (@chgeuer), MIT License");
             Console.WriteLine("Source code is available at https://github.com/kreuzhofer/AzureLargeFileUploader");
-            Console.WriteLine("********************************************************************************");
+            Console.WriteLine("********************************************************************************************************************");
         }
 
         private static void Help()
